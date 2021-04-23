@@ -1,6 +1,6 @@
 const mineflayer = require('mineflayer');
 const valid_minehut_ranks = ['[VIP]', '[PRO]', '[LEGEND]', '[PATRON]', '[HELPER]', '[MOD]', '[SR.MOD]', '[DEV]', '[ADMIN]'];
-const color_codes = [`§a`, `§b`, `§c`, `§d`, `§e`, `§f`, `§g`, `§k`, `§l`, `§m`, `§n`, `§o`, `§r`, `§0`, `§1`, `§2`, `§3`, `§4`, `§5`, `§6`, `§7`, `§8`, `§9`];
+const illegal_chars = [`§a`, `§b`, `§c`, `§d`, `§e`, `§f`, `§g`, `§k`, `§l`, `§m`, `§n`, `§o`, `§r`, `§0`, `§1`, `§2`, `§3`, `§4`, `§5`, `§6`, `§7`, `§8`, `§9`, `?`, `!`];
 const discord = require('discord.js');
 const dc_bot = new discord.Client();
 const mongo = require('./mongoose.js');
@@ -72,7 +72,7 @@ bot.on('message', async(message) => {
             message_joined = json.text;
             if(message_joined.includes(`§`)) {
                 while(message_joined.includes(`§`)) {
-                    for(let colour_code of color_codes) {
+                    for(let colour_code of illegal_chars) {
                         message_joined = message_joined.replace(`${colour_code}`, ``);
                     }
                 }
