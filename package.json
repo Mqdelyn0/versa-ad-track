@@ -1,0 +1,19 @@
+{
+  "name": "advertising",
+  "version": "1.0.0",
+  "description": "",
+  "main": "ad.js",
+  "dependencies": {
+    "discord.js": "^12.5.3",
+    "mineflayer": "^3.6.0",
+    "mongoose": "^5.12.4",
+    "nodemon": "^2.0.7"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "dev": "nodemon run ./ad.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
