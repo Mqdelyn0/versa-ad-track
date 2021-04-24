@@ -1,6 +1,6 @@
 const mineflayer = require('mineflayer');
-const valid_minehut_ranks = ['[VIP]', '[PRO]', '[LEGEND]', '[PATRON]', '[HELPER]', '[MOD]', '[SR.MOD]', '[DEV]', '[ADMIN]'];
-const illegal_chars = [`§a`, `§b`, `§c`, `§d`, `§e`, `§f`, `§g`, `§k`, `§l`, `§m`, `§n`, `§o`, `§r`, `§0`, `§1`, `§2`, `§3`, `§4`, `§5`, `§6`, `§7`, `§8`, `§9`, `?`, `!`];
+const valid_minehut_ranks = ['VIP', 'PRO', 'LEGEND', 'PATRON', 'HELPER', 'MOD', 'SRMOD', 'DEV', 'ADMIN'];
+const color_codes = [`§a`, `§b`, `§c`, `§d`, `§e`, `§f`, `§g`, `§k`, `§l`, `§m`, `§n`, `§o`, `§r`, `§0`, `§1`, `§2`, `§3`, `§4`, `§5`, `§6`, `§7`, `§8`, `§9`];
 const discord = require('discord.js');
 const dc_bot = new discord.Client();
 const mongo = require('./mongoose.js');
@@ -13,7 +13,7 @@ let bot = mineflayer.createBot({
     username: account_Mqdelyn0[0],
     password: account_Mqdelyn0[1],
     port: 25565,
-    version: "1.8.9",
+    version: "1.16.5",
     auth: "mojang",
 });
 
@@ -46,6 +46,13 @@ bot.on(`error`, (error) => {
     console.log(error);
 })
 
+bot.on(`end`, (error) => {
+    console.log(error);
+    bot.connect({
+        host: "minehut.com"
+    });
+});
+
 bot.on(`kicked`, (error) => {
     console.log(error);
     bot.connect({
@@ -71,22 +78,21 @@ bot.on('message', async(message) => {
                 }
             } else if(type === 2) {
                 message_joined = json.text;
-                if(message_joined) {
-                    if(message_joined.includes(`§`)) {
-                        while(message_joined.includes(`§`)) {
-                            for(let colour_code of illegal_chars) {
-                                message_joined = message_joined.replace(`${colour_code}`, ``);
-                            }
-                        }
+                while(message_joined.includes(`§`)) {
+                    for(let colour_code of color_codes) {
+                        message_joined = message_joined.replace(`${colour_code}`, ``);
                     }
                 }
             }
+            message_joined = message_joined.replace(/(?!\w|\s)./g, '')
+                             .replace(/\s+/g, ' ')
+                             .replace(/^(\s*)([\W\w]*)(\b\s*$)/g, '$2');
             if(!message_joined) return;
-            if(message_joined.toUpperCase().startsWith(`[AD]`)) {
+            if(message_joined.toUpperCase().startsWith(`AD`)) {
                 let data = message_joined.split(' ');
                 rank = data[1];
                 if(!valid_minehut_ranks.includes(rank)) {
-                    rank = "[DEFAULT]";
+                    rank = "DEFAULT";
                 }
                 userr = data[1];
                 if(valid_minehut_ranks.includes(rank)) {
@@ -94,7 +100,7 @@ bot.on('message', async(message) => {
                 }
                 user = userr.replace(':', '')
                 server = data[3];
-                if(server === "/join") {
+                if(server === "join") {
                     server = data[4];
                 }
                 console.log(`[Advertisement] ${user} has advertised ${server} with ${rank}!`);
