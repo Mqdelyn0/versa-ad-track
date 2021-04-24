@@ -104,7 +104,7 @@ bot.on('message', async(message) => {
                     server = data[4];
                 }
                 console.log(`[Advertisement] ${user} has advertised ${server} with ${rank}!`);
-                    if(server.toLowerCase() === "elestra" || server.toLowerCase() === "genversa" || server.toLowerCase() === "mineversa") {
+                if(server.toLowerCase() === "elestra" || server.toLowerCase() === "genversa" || server.toLowerCase() === "mineversa") {
                     let channel = dc_bot.channels.cache.get('832720733552902154');
                     let message_embed = new discord.MessageEmbed()
                         .setColor(`#FFBB33`)
@@ -136,7 +136,7 @@ bot.on('message', async(message) => {
                         }
                     } else if(model_2) {
                         let new_num = model_2.ad_party;
-                        new_num = new_num + 1;
+                        new_num++;
                         server_model.updateOne({ server: server.toLowerCase() }, { ad_party: new_num }, (error) => {
                             if(error) {
                                 console.log(error);
