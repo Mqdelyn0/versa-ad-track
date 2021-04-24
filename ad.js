@@ -71,14 +71,17 @@ bot.on('message', async(message) => {
                 }
             } else if(type === 2) {
                 message_joined = json.text;
-                if(message_joined.includes(`§`)) {
-                    while(message_joined.includes(`§`)) {
-                        for(let colour_code of illegal_chars) {
-                            message_joined = message_joined.replace(`${colour_code}`, ``);
+                if(message_joined) {
+                    if(message_joined.includes(`§`)) {
+                        while(message_joined.includes(`§`)) {
+                            for(let colour_code of illegal_chars) {
+                                message_joined = message_joined.replace(`${colour_code}`, ``);
+                            }
                         }
                     }
                 }
             }
+            if(!message_joined) return;
             if(message_joined.toUpperCase().startsWith(`[AD]`)) {
                 let data = message_joined.split(' ');
                 rank = data[1];
@@ -95,46 +98,44 @@ bot.on('message', async(message) => {
                     server = data[4];
                 }
                 console.log(`[Advertisement] ${user} has advertised ${server} with ${rank}!`);
-                if(server) {
                     if(server.toLowerCase() === "elestra" || server.toLowerCase() === "genversa" || server.toLowerCase() === "mineversa") {
-                        let channel = dc_bot.channels.cache.get('832720733552902154');
-                        let message_embed = new discord.MessageEmbed()
-                            .setColor(`#FFBB33`)
-                            .setDescription(`${user} has advertised!\n\nWhat Server? ${server.toLowerCase()}\nWhat Rank? ${rank}`)
-                            .setThumbnail(`https://minotar.net/helm/${user}`)
-                            .setAuthor(`Server Advertisement`)
-                            .setFooter(`Coded by Madelyn | Versa Realms`)
-                        channel.send(message_embed);
-                        let model_1 = new advert_model({
-                            advertiser: user,
+                    let channel = dc_bot.channels.cache.get('832720733552902154');
+                    let message_embed = new discord.MessageEmbed()
+                        .setColor(`#FFBB33`)
+                        .setDescription(`${user} has advertised!\n\nWhat Server? ${server.toLowerCase()}\nWhat Rank? ${rank}`)
+                        .setThumbnail(`https://minotar.net/helm/${user}`)
+                        .setAuthor(`Server Advertisement`)
+                        .setFooter(`Coded by Madelyn | Versa Realms`)
+                    channel.send(message_embed);
+                    let model_1 = new advert_model({
+                        advertiser: user,
+                        server: server.toLowerCase(),
+                        rank: rank,
+                    });
+                    try {
+                        model_1.save();
+                    } catch(error) {
+                        console.log(error);
+                    }
+                    let model_2 = await server_model.findOne({ server: server.toLowerCase() });
+                    if(!model_2) {
+                        let new_model_2 = new server_model({
                             server: server.toLowerCase(),
-                            rank: rank,
+                            ad_party: 0
                         });
                         try {
-                            model_1.save();
+                            new_model_2.save();
                         } catch(error) {
                             console.log(error);
                         }
-                        let model_2 = await server_model.findOne({ server: server.toLowerCase() });
-                        if(!model_2) {
-                            let new_model_2 = new server_model({
-                                server: server.toLowerCase(),
-                                ad_party: 0
-                            });
-                            try {
-                                new_model_2.save();
-                            } catch(error) {
+                    } else if(model_2) {
+                        let new_num = model_2.ad_party;
+                        new_num = new_num + 1;
+                        server_model.updateOne({ server: server.toLowerCase() }, { ad_party: new_num }, (error) => {
+                            if(error) {
                                 console.log(error);
                             }
-                        } else if(model_2) {
-                            let new_num = model_2.ad_party;
-                            new_num = new_num + 1;
-                            server_model.updateOne({ server: server.toLowerCase() }, { ad_party: new_num }, (error) => {
-                                if(error) {
-                                    console.log(error);
-                                }
-                            });
-                        }
+                        });
                     }
                 }
             }
