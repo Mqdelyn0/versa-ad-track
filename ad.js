@@ -83,7 +83,7 @@ bot.on('message', async(message) => {
             server = data[4];
         }
         console.log(`[Advertisement] ${user} has advertised ${server} with ${rank}!`);
-        if(server.toLowerCase() === "elestra" || server.toLowerCase() === "genversa" || server.toLowerCase() === "mineversa") {
+        if(server.toLowerCase() === "subtropic" || server.toLowerCase() === "genversa" || server.toLowerCase() === "mineversa") {
             let channel = dc_bot.channels.cache.get('832720733552902154');
             let message_embed = new discord.MessageEmbed()
                 .setColor(`#FFBB33`)
